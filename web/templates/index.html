@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Flubbit</title>
+  <link rel="stylesheet" href="normalize.css">
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans:700,400,600' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+  <style>
+  html, body {
+width: 100%;
+height: 100%;
+margin: 0px;
+padding: 0px;
+}
+
+
+    body {
+      position: relative;
+      font-family: 'Open Sans', sans-serif;
+      background: #fafafa;
+      border: 0;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      width: 770px;
+      margin: 10px auto;
+      /*background: white;*/
+    }
+    a {
+      color: #0092BA;
+    }
+    a:hover {
+      color: #179DC2;
+    }
+    .header {
+      text-align: center;
+      padding: 20px 0;
+      background: #0097a7;
+      width: 100%;
+      box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.5);
+    }
+    .logo {
+      display: inline;
+      font-size: 1.5em;
+      color: white;
+    }
+    .menu {
+      list-style-type: none;
+      display: inline;
+      color: white;
+    }
+    .menu li {
+      font-size: 0.9em;
+      margin-right: 15px;
+      display: inline-block;
+    }
+    .menu li.top {
+      margin: 0;
+      margin-left: 20px;
+      margin-right: 10px;
+    }
+    .menu li a {
+      /*color: white;*/
+      color: rgba(255,255,255,0.95);
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .menu li a:hover {
+      color: white;
+    }
+    .posts {
+      display: block;
+    }
+    .post {
+      padding: 5px 5px 10px 5px;
+      margin: 5px 0;
+      border-bottom: solid 3px rgba(0, 0, 0, 0.3);
+      box-sizing: content-box;
+      background: #F8F8F8;
+    }
+    .vote-button {
+      display: inline-block;
+      text-align: center;
+      width: 50px;
+    }
+    .up {
+      color: #595959;
+      font-size: 1.5em;
+    }
+    .vote-number {
+    }
+    .post-content {
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .title {
+      width: 700px;
+      font-weight: 600;
+      font-size: 1em;
+    }
+    .title a {
+      color: black;
+      text-decoration: none;
+    }
+    .url {
+      font-weight: 400;
+      color: gray;
+    }
+    .byline {
+      font-size: 0.85em;
+      color: #707070;
+    }
+    a.time {
+      color: #919191;
+      text-decoration: none;
+      border-bottom: 1px dashed #999;
+    }
+    .name {
+      color: #242424;
+    }
+    .comments {
+      font-size: 0.85em;
+      font-weight: 600;
+    }
+  </style>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+  <script>
+  $(document).ready(function() {
+    $(".up").click(function() { 
+      toastr.warning("Voting not implemented yet."); 
+    });
+  });
+  </script>
+</head>
+
+<body>
+  <div class="header">
+    <div class="logo">Hackit</div>
+    <ul class="menu">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">FAQ</a></li>
+      <li><a href="#">Hot</a></li>
+      <li class="top">Top:</li>
+      <li><a href="#">Day</a>
+        <li><a href="#">Month</a></li>
+        <li><a href="#">All</a></li>
+      </ul>
+    </div>
+    <div class="container">
+
+      <div class="posts">
+        {% for item in li %}
+        <div class="post">
+          <div class="vote-button">
+            <div class="up">&#9650;</div>
+            <div class="vote-number">{{ item.active }}</div>
+          </div>
+          <div class="post-content">
+            <div class="title"><a href="#">{{ item.title }}</a>
+              <span class="url">{{item.link }}</span></div>
+            <div class="byline">Posted <a class="time" href="">37 minutes ago</a> by <span class="name">Samuel Ishmael Philip</span> to <a href="#">Hackathon Hackers</a>.</div>
+            <div class="comments"><a href="#">{{ item.comments }} comments</a></div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </body>
+  </html>
+
