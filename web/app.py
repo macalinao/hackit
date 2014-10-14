@@ -4,8 +4,20 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 from urlparse import urlparse 
 import arrow
+import re
 
 app = Flask(__name__)
+
+_link = re.compile(r'(?:(http://)|(www\.))(\S+\b/?)([!"#$%&\'()*+,\-./:;<=>?@[\\\]^_`{|}~]*)(\s|$)', re.I)
+def convertLinks(text): 
+    def replace(match):
+        groups = match.groups()
+        protocol = groups[0] or ''  # may be None
+        www_lead = groups[1] or ''  # may be None
+        return '<a href="http://{1}{2}" rel="nofollow">{0}{1}{2}</a>{3}{4}'.format(
+            protocol, www_lead, *groups[2:])
+    return _link.sub(replace, text)
+
 def get_posts(sql, var=None):
   con = psycopg2.connect(database="flobbitdb", user="edward", password="yolomol0")
   cur = con.cursor(cursor_factory=RealDictCursor)
@@ -28,7 +40,7 @@ def process_posts(li):
         i.update({'nice_link':'self'})
     else:
         i.update({'nice_link':urlparse(i['link']).netloc})
-    i['full_post'] = Markup(markdown.markdown(i['full_post']))
+    i['full_post'] = Markup(convertLinks(markdown.markdown(i['full_post'])))
     i['time'] = arrow.get(i['time']).humanize()
     # i['fb_user_name'] = i['fb_user_name'].decode('utf-8', errors='ignore')
   return li
@@ -84,6 +96,7 @@ def process_comments(li):
             except: pass
         try:
             i['time'] = arrow.get(i['time']).humanize()
+            i['comment'] = convertLinks(i['comment'])
         except: pass
 
   return li

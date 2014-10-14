@@ -5,6 +5,7 @@ import psycopg2
 import re
 import lib
 import requests
+import traceback
 
 APP_ID = '281793872016719'
 APP_SECRET = 'e91a9a2e78f1e25e3142a16a6da5252e'
@@ -70,14 +71,24 @@ def save_comment_info(datum, inserted_id):
           fb_user_name = c['from']['name']
           comment_id = get_comment_id(fb_id)
           if comment_id:
-            query = "DELETE FROM \"Comments\" WHERE fb_id=%s";
-            cur.execute(query, (fb_id,))
-        
-          query = """INSERT INTO \"Comments\" 
-          (votes, comment, fb_id, time, post_id, fb_user_id, fb_user_name) VALUES 
-          (%s, %s, %s, %s,  %s, %s, %s)"""
-          cur.execute(query, (votes, comment, fb_id, time, post_id, fb_user_id, fb_user_name))
-          comment_id = get_comment_id(fb_id)
+            query = """
+            UPDATE "Comments"
+            SET votes = %s,
+                comment = %s,
+                fb_id = %s,
+                time = %s,
+                post_id = %s,
+                fb_user_id = %s,
+                fb_user_name = %s
+                WHERE id = %s
+            """
+            cur.execute(query, (votes, comment, fb_id, time, post_id, fb_user_id, fb_user_name, comment_id))
+          else: 
+            query = """INSERT INTO "Comments"
+            (votes, comment, fb_id, time, post_id, fb_user_id, fb_user_name) VALUES 
+            (%s, %s, %s, %s,  %s, %s, %s)"""
+            cur.execute(query, (votes, comment, fb_id, time, post_id, fb_user_id, fb_user_name))
+            comment_id = get_comment_id(fb_id)
           print "saved comment"
       if 'next' in comment_obj['paging']:
         print "next page of comments.. sleeping"
@@ -103,17 +114,35 @@ def save_post_info(datum):
     print(group_id)
     inserted_id = get_post_id(fb_id)
     if inserted_id:
-      query = "DELETE FROM \"Posts\" WHERE fb_id  = %s"
-      cur.execute(query, (fb_id,))
-    query = """INSERT INTO \"Posts\" 
-    (fb_id, title, full_post, link, likes, comments, active, time, group_id, original_url, fb_user_id, fb_user_name) 
-    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
-    cur.execute(query, 
-      (fb_id, title, full_post, link, likes, comment_count, 
-        likes+comment_count, time, group_id, original_url, fb_user_id, fb_user_name))
-    inserted_id = get_post_id(fb_id)
+      query = """
+      UPDATE "Posts"
+      SET fb_id = %s,
+          title = %s,
+          full_post = %s,
+          link = %s,
+          likes = %s,
+          comments = %s,
+          active = %s,
+          time = %s,
+          group_id = %s,
+          original_url = %s,
+          fb_user_id = %s,
+          fb_user_name = %s
+      WHERE id = %s"""
+      cur.execute(query, (fb_id, title, full_post, link, likes, comment_count, likes+comment_count, time, group_id, original_url, fb_user_id, fb_user_name, inserted_id))
+      print "updated post: %s" %(inserted_id,)
+    else:
+      query = """INSERT INTO \"Posts\" 
+      (fb_id, title, full_post, link, likes, comments, active, time, group_id, original_url, fb_user_id, fb_user_name) 
+      VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+      cur.execute(query, 
+        (fb_id, title, full_post, link, likes, comment_count, 
+          likes+comment_count, time, group_id, original_url, fb_user_id, fb_user_name))
+      inserted_id = get_post_id(fb_id)
     return inserted_id
-  except Exception as e: print("Post error: " + str(e))
+  except Exception as e: 
+    print("Post error: " + str(e))
+    print( traceback.print_exc() )
 def use_epoch(obj):
   return obj + "?date_format=U"
 def get_feed(group_id):
