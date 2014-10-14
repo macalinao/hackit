@@ -10,7 +10,6 @@ while True:
         try:
             print "Saving first page of : " + item[1]
             fb.save_recent(item[0])
-        except: 
-            pass
+        except Exception, e: print str(e) + " in cron.py"
 
     con.close()

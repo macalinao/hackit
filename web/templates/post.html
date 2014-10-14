@@ -1,0 +1,248 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Flubbit</title>
+<link rel="stylesheet" href="/static/normalize.css">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:700,400,600' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+<style>
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+}
+
+
+body {
+  position: relative;
+  font-family: 'Open Sans', sans-serif;
+  background: #fafafa;
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+.container {
+  width: 770px;
+  margin: 10px auto;
+  /*background: white;*/
+}
+p {
+  margin: 0.6em 0;
+}
+a {
+  color: #0092BA;
+}
+a:hover {
+  color: #179DC2;
+  }
+  .header {
+    text-align: center;
+    padding: 20px 0;
+    background: #0097a7;
+    width: 100%;
+    box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.5);
+  }
+  .logo {
+    display: inline;
+    font-size: 1.5em;
+    color: white;
+  }
+  .logo a {
+    color: white;
+    text-decoration: none;
+  }
+  .menu {
+    list-style-type: none;
+    display: inline;
+    color: white;
+  }
+  .menu li {
+    font-size: 0.9em;
+    margin-right: 15px;
+    display: inline-block;
+  }
+  .menu li.top {
+    margin: 0;
+    margin-left: 20px;
+    margin-right: 10px;
+  }
+  .menu li a {
+    /*color: white;*/
+    color: rgba(255,255,255,0.95);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .menu li a:hover {
+    color: white;
+  }
+  .posts {
+    display: block;
+  }
+  .post {
+    padding: 5px 5px 10px 5px;
+    margin: 5px 0;
+    /* border-bottom: solid 3px rgba(0, 0, 0, 0.3); */
+    box-sizing: content-box;
+    background: #FFF;
+  }
+  .vote-button {
+    display: inline-block;
+    text-align: center;
+    vertical-align: top;
+    width: 50px;
+  }
+  .up {
+    color: #595959;
+    font-size: 1.5em;
+  }
+  .vote-number {
+  }
+  .post-content {
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .title, .full_post, .comment-data {
+    width: 700px;
+  }
+  .title {
+    font-weight: 600;
+    font-size: 1em;
+  }
+  .full_post {
+    border: solid 1px #BDBDBD;
+    border-radius: 10px;
+    box-sizing: border-box;
+    margin: 10px 0 ;
+    font-size: 0.85em;
+    padding: 0 0.5em;
+  }
+  .title a {
+    color: black;
+    text-decoration: none;
+  }
+  .url {
+    font-size: 1em;
+    font-weight: 400;
+    color: gray;
+  }
+  .byline {
+    font-size: 0.85em;
+    color: #707070;
+  }
+  a.time {
+    color: #919191;
+    text-decoration: none;
+    border-bottom: 1px dashed #999;
+  }
+  .name {
+    color: #242424;
+  }
+  .comments {
+    font-size: 0.85em;
+    font-weight: 600;
+  }
+  .comment-list {
+    margin-top: 20px;
+    background: white;
+  }
+  .comment {
+    box-sizing: border-box;
+    padding: 5px;
+  }
+  .comment-vote-button {
+    display: inline-block;
+    text-align: center;
+    vertical-align: top;
+    padding-left: 5px;
+    width: 30px;
+    font-size: 0.8em;
+  }
+  .comment-byline {
+    font-size: 0.85em;
+    color: black;
+  }
+  .comment-content {
+    display: inline-block;
+  }
+  .comment-name {
+    font-weight: 600;
+    color: black;
+    display:inline;
+  }
+  .comment-data {
+    border-radius: 10px;
+    /*border: solid 1px #000;*/
+    padding: 5px;
+    font-size: 0.9em;
+    color: #383838;
+    overflow: auto;
+  }
+</style>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<script>
+$(document).ready(function() {
+    $(".up").click(function() { 
+      toastr.warning("Voting not implemented yet."); 
+      });
+    });
+</script>
+</head>
+
+<body>
+<div class="header">
+  <div class="logo"><a href="/">Hackit</a></div>
+  <ul class="menu">
+    <li><a href="/">Hot</a></li>
+    <li><a href="/faq">FAQ</a></li>
+    <li><a href="/new">New</a></li>
+    <li class="top">Top:</li>
+    <li><a href="/">Day</a></li>
+    <li><a href="/month">Month</a></li>
+    <li><a href="/year">Year</a></li>
+  </ul>
+</div>
+<div class="container">
+
+  <div class="posts">
+    <div class="post">
+      <div class="vote-button">
+        <div class="up">▲</div>
+        <div class="vote-number">{{post.active}}</div>
+      </div>
+      <div class="post-content">
+        <div class="title"><a href="{{post.link}}">{{post.title}}</a>
+          <span class="url">({{post.nice_link}})</span></div>
+        <div class="full_post">
+          {{post.full_post}}
+        </div>
+        <div class="byline">Posted <a class="time" href="{{post.original_url}}">{{post.time}}</a>
+          by <span class="name">{{post.fb_user_name}}</span>
+          to <a href="#">{{post.name}}</a>.</div>
+        <div class="comments"><a href="/p/{{post.id}}">{{post.comments}} comments</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="comment-list">
+    {% for c in comments %}
+    <div class="comment">
+      <div class="comment-vote-button">
+        <div class="up">▲</div>
+        <div class="vote-number">{{c.votes}}</div>
+      </div>
+      <div class="comment-content">
+        <div class="comment-byline"><div class="comment-name">{{c.fb_user_name}}</div> {{c.time}}</div>
+        <div class="comment-data">{{c.comment}}</div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+</body>
+</html>
+
+

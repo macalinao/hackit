@@ -18,6 +18,7 @@ cur = con.cursor()
 token = facebook.get_app_access_token(APP_ID, APP_SECRET)
 graph = facebook.GraphAPI(token)
 
+loop = 0
 def get_post_id(fb_id):
   cur.execute("SELECT id from \"Posts\" where fb_id = %s", (fb_id,))
   inserted_id = cur.fetchone()
@@ -55,7 +56,10 @@ def get_comment_count_from_summary(summary):
   return comment_count
 def save_comment_info(datum, inserted_id):
   try:
-      comments = datum['comments']['data']
+    comment_obj = graph.get_object(use_epoch(datum['id']))['comments']
+    comments = comment_obj['data']
+    while True:
+      # comments = datum['comments']['data']
       for c in comments:
           votes = c['like_count']
           comment = c['message']
@@ -69,9 +73,17 @@ def save_comment_info(datum, inserted_id):
             query = "DELETE FROM \"Comments\" WHERE fb_id=%s";
             cur.execute(query, (fb_id,))
         
-          query = "INSERT INTO \"Comments\" (votes, comment, fb_id, time, post_id, fb_user_id, fb_user_name) VALUES (%s, %s, %s, to_timestamp(%s),  %s, %s, %s)"
+          query = """INSERT INTO \"Comments\" 
+          (votes, comment, fb_id, time, post_id, fb_user_id, fb_user_name) VALUES 
+          (%s, %s, %s, %s,  %s, %s, %s)"""
           cur.execute(query, (votes, comment, fb_id, time, post_id, fb_user_id, fb_user_name))
           comment_id = get_comment_id(fb_id)
+          print "saved comment"
+      if 'next' in comment_obj['paging']:
+        print "next page of comments.. sleeping"
+        sleep(0.9)
+        comments = requests.get(comment_obj['paging']['next']).json()
+      else: break
   except Exception as e: print "comment exception: " + str(e)  
 def save_post_info(datum):
   try: 
@@ -95,15 +107,17 @@ def save_post_info(datum):
       cur.execute(query, (fb_id,))
     query = """INSERT INTO \"Posts\" 
     (fb_id, title, full_post, link, likes, comments, active, time, group_id, original_url, fb_user_id, fb_user_name) 
-    VALUES (%s, %s, %s, %s, %s, %s, %s, to_timestamp(%s), %s, %s, %s, %s)"""
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
     cur.execute(query, 
       (fb_id, title, full_post, link, likes, comment_count, 
         likes+comment_count, time, group_id, original_url, fb_user_id, fb_user_name))
     inserted_id = get_post_id(fb_id)
     return inserted_id
   except Exception as e: print("Post error: " + str(e))
+def use_epoch(obj):
+  return obj + "?date_format=U"
 def get_feed(group_id):
-  feed = graph.get_object(str(group_id) + "/feed?date_format=U")
+  feed = graph.get_object(use_epoch(str(group_id) + "/feed"))
   return feed
 def save_post_and_comments(datum):
   inserted_id = save_post_info(datum)
@@ -130,14 +144,16 @@ def save_all(group_id):
          break
   con.close()
 def save_recent(group_id):
+  loop = 0
   con = psycopg2.connect(database="flobbitdb", user='edward', password='yolomol0')
   con.autocommit = True
   cur = con.cursor()
   feed = get_feed(group_id)
   data = feed['data']
+  print str(len(data)) + "in page"
   for datum in data:
-    sleep(1) # fb rate limiting
     loop += 1
-    print str(loop) + "posts"
+    print(str(loop) + "posts in group saved")
+    sleep(1) # fb rate limiting
     save_post_and_comments(datum)
   con.close()
