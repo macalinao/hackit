@@ -6,13 +6,15 @@ import re
 import lib
 import requests
 import traceback
+import config
 
-APP_ID = '281793872016719'
-APP_SECRET = 'e91a9a2e78f1e25e3142a16a6da5252e'
+APP_ID = config.FB_APP_ID
+APP_SECRET = config.FB_APP_SECRET
 
 # connect to db
     
-con = psycopg2.connect(database="flobbitdb", user='edward', password='yolomol0')
+con = psycopg2.connect(database=config.DATABASE_NAME, user=config.DATABASE_USER,
+    password=config.DATABASE_PASSWORD)
 con.autocommit = True
 cur = con.cursor()
 

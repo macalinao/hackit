@@ -6,6 +6,7 @@ from urlparse import urlparse
 import arrow
 import re
 from werkzeug.contrib.fixers import ProxyFix
+import config
 
 app = Flask(__name__)
 
@@ -20,7 +21,8 @@ def convertLinks(text):
     return _link.sub(replace, text)
 
 def get_posts(sql, var=None):
-  con = psycopg2.connect(database="flobbitdb", user="edward", password="yolomol0")
+  con = psycopg2.connect(database=config.DATABASE_NAME, 
+      user=config.DATABASE_USER, password=config.DATABASE_PASSWORD)
   cur = con.cursor(cursor_factory=RealDictCursor)
   if var == None:
     cur.execute(sql)
@@ -98,11 +100,14 @@ def process_comments(li):
         try:
             i['time'] = arrow.get(i['time']).humanize()
         except: pass
-        i['comment'] = convertLinks(i['comment']) 
-
+        i['comment'] = Markup(convertLinks(i['comment']))
   return li
 @app.route("/")
 def index():
+  li = get_new()
+  return render_template("index.html", li=li)
+@app.route("/day")
+def top_day():
   li = get_top_day()
   return render_template("index.html", li=li)
 @app.route("/month")
@@ -132,7 +137,18 @@ def faq():
   faq = """
   Q: How are upvotes calculated? <br>
   A: upvotes = comments + likes <br> <br>
-
+  Q: Why aren't images working? <br>
+  A: Facebook API doesn't allow me to download images from groups. If you know someone who can get me access, let me know!<br><br>
+  Q: I see blank comments. Why is that? <br>
+  A: Those are sticker comments. See above. <br><br> 
+  Q: How can I get to the original Facebook post? <br>
+  A: Click the time stamp (e.g. 3 hours ago). <br><br>
+  Q: What's next on the to-do list? <br>
+  A: Pagination, search, upvoting, commenting. <br><br.
+  Q: I have a feature request! <br>
+  A: Cool! Message me on Facebook or shoot me an email at edward.auc (@) gmail<br><br>
+  Q: What stack is this written in? <br>
+  A: Flask micro-webframework, gunicorn server, nginx for reverse proxying. Postgres database. Webdev is all custom css, inspired by Material Design.<br><br>
   """
   return faq
 
