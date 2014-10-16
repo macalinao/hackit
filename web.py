@@ -83,6 +83,7 @@ def get_comments(id):
   cur = con.cursor(cursor_factory=RealDictCursor)
   sql = """SELECT * FROM "Comments"
            WHERE post_id = %s
+           ORDER BY time;
         """
   cur.execute(sql, (id,))
   li = cur.fetchall()
