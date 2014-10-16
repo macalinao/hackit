@@ -1,0 +1,2 @@
+2014/10/14 16:27:24 [error] 7449#0: *1 connect() failed (111: Connection refused) while connecting to upstream, client: 199.27.128.148, server: hello.edward.io, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:8000/", host: "edward.io"
+2014/10/15 01:32:16 [error] 28620#0: *163 connect() failed (111: Connection refused) while connecting to upstream, client: 199.27.128.161, server: hackit.edward.io, request: "GET /p/65664 HTTP/1.1", upstream: "http://127.0.0.1:8000/p/65664", host: "hackit.edward.io", referrer: "http://hackit.edward.io/new"

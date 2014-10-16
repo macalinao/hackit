@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Flubbit</title>
+  <title>Hackit</title>
   <link rel="stylesheet" href="/static/normalize.css">
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:700,400,600' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
@@ -109,6 +109,9 @@ padding: 0px;
       color: black;
       text-decoration: none;
     }
+    .title a:visited {
+      color: gray;
+    }
     .url {
       font-size: 1em;
       font-weight: 400;
@@ -150,7 +153,7 @@ padding: 0px;
       <li><a href="/faq">FAQ</a></li>
       <li><a href="/new">New</a></li>
       <li class="top">Top:</li>
-      <li><a href="/">Day</a>
+      <li><a href="/day">Day</a>
         <li><a href="/month">Month</a></li>
         <li><a href="/year">Year</a></li>
       </ul>
@@ -176,6 +179,16 @@ padding: 0px;
         {% endfor %}
       </div>
     </div>
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+         })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-45795911-3', 'auto');
+    ga('send', 'pageview');
+
+    </script>
   </body>
   </html>
 
