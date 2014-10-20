@@ -107,7 +107,7 @@ def save_post_info(datum):
   try: 
     fb_id = datum['id']
     full_post = datum['message']
-    if 'ray ban' in full_post: return
+    if 'ray ban' or 'RAYBAN' in full_post: return
     title = get_title_from_post(full_post)
     original_url = datum['actions'][0]['link']
     link = get_link_from_post(full_post)

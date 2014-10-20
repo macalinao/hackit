@@ -177,6 +177,10 @@ padding: 0px;
           </div>
         </div>
         {% endfor %}
+        {% if offset %}
+        <a href="?offset={{offset - 40}}">previous</a> | 
+        {% endif %}
+        <a href="?offset={{offset + 40}}">next</a>
       </div>
     </div>
     <script>

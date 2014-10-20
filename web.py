@@ -1,5 +1,5 @@
 import markdown
-from flask import Flask, render_template, Markup
+from flask import Flask, render_template, Markup, request
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from urlparse import urlparse 
@@ -47,24 +47,33 @@ def process_posts(li):
     i['time'] = arrow.get(i['time']).humanize()
     # i['fb_user_name'] = i['fb_user_name'].decode('utf-8', errors='ignore')
   return li
-def get_top_seconds(seconds):
+def get_top_seconds(seconds, offset=None):
+  offset_sql = ""
+  if offset:
+    offset_sql = "OFFSET %s"
+    var = (seconds, offset)
+  else:
+    var = (seconds, )
   sql = """
             SELECT *
             FROM   "Posts", "Groups"
             WHERE (extract(epoch from now()) - time < %s)
             AND "Posts".group_id = "Groups".fb_id
             ORDER BY active DESC
-            LIMIT 40;"""
-  var = (seconds,)
+            LIMIT 40""" + offset_sql +";"
   return get_posts(sql, var)
-def get_new():
+def get_new(offset=None):
+  offset_sql = ""
+  if offset:
+    offset_sql = "OFFSET %s"
   sql = """
             SELECT *
             FROM   "Posts", "Groups"
             WHERE "Posts".group_id = "Groups".fb_id
             ORDER BY time DESC
-            LIMIT 40;"""
-  return get_posts(sql)
+            LIMIT 40""" + offset_sql + ";"
+  if offset: return get_posts(sql, (offset,))
+  else:      return get_posts(sql)
 def get_post(id):
     sql = """
             SELECT *
@@ -72,12 +81,12 @@ def get_post(id):
             WHERE "Posts".group_id = "Groups".fb_id
             AND id = %s"""
     return get_posts(sql, (id,))
-def get_top_day():
-  return get_top_seconds(86400)
-def get_top_month():
-  return get_top_seconds(2628000)
-def get_top_year():
-  return get_top_seconds(31536000)
+def get_top_day(offset=None):
+  return get_top_seconds(86400, offset)
+def get_top_month(offset=None):
+  return get_top_seconds(2628000, offset)
+def get_top_year(offset=None):
+  return get_top_seconds(31536000, offset)
 def get_comments(id):
   con = psycopg2.connect(database="flobbitdb", user="edward", password="yolomol0")
   cur = con.cursor(cursor_factory=RealDictCursor)
@@ -105,24 +114,29 @@ def process_comments(li):
   return li
 @app.route("/")
 def index():
-  li = get_new()
-  return render_template("index.html", li=li)
+  offset = request.args.get('offset', 0)
+  li = get_new(offset)
+  return render_template("index.html", li=li, offset=offset)
 @app.route("/day")
 def top_day():
-  li = get_top_day()
-  return render_template("index.html", li=li)
+  offset = request.args.get('offset', 0)
+  li = get_top_day(offset)
+  return render_template("index.html", li=li, offset=int(offset))
 @app.route("/month")
 def top_month():
-  li = get_top_month()
-  return render_template("index.html", li=li)
+  offset = request.args.get('offset', 0)
+  li = get_top_month(offset)
+  return render_template("index.html", li=li, offset=int(offset))
 @app.route("/year")
 def top_year():
-  li = get_top_year()
-  return render_template("index.html", li=li)
+  offset = request.args.get('offset', 0)
+  li = get_top_year(offset)
+  return render_template("index.html", li=li, offset=int(offset))
 @app.route("/new")
 def new():
-  li = get_new()
-  return render_template("index.html", li=li)
+  offset = request.args.get('offset', 0)
+  li = get_new(offset)
+  return render_template("index.html", li=li, offset=int(offset))
 @app.route("/p/<int:id>")
 def comments(id):
   post = None
@@ -153,7 +167,7 @@ def faq():
   """
   return faq
 
-app.wsgi_app = ProxyFix(app.wsgi_app)
+#app.wsgi_app = ProxyFix(app.wsgi_app)
 
 if __name__ == "__main__":
   app.run(host="0.0.0.0", debug=True)
