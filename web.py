@@ -112,31 +112,37 @@ def process_comments(li):
         except: pass
         i['comment'] = Markup(convertLinks(i['comment']))
   return li
+def convert_to_int(offset):
+  try:
+    return int(offset)
+  except:
+    return 0
+
 @app.route("/")
 def index():
   offset = request.args.get('offset', 0)
   li = get_new(offset)
-  return render_template("index.html", li=li, offset=offset)
+  return render_template("index.html", li=li, offset=convert_to_int(offset))
 @app.route("/day")
 def top_day():
   offset = request.args.get('offset', 0)
   li = get_top_day(offset)
-  return render_template("index.html", li=li, offset=int(offset))
+  return render_template("index.html", li=li, offset=convert_to_int(offset))
 @app.route("/month")
 def top_month():
   offset = request.args.get('offset', 0)
   li = get_top_month(offset)
-  return render_template("index.html", li=li, offset=int(offset))
+  return render_template("index.html", li=li, offset=convert_to_int(offset))
 @app.route("/year")
 def top_year():
   offset = request.args.get('offset', 0)
   li = get_top_year(offset)
-  return render_template("index.html", li=li, offset=int(offset))
+  return render_template("index.html", li=li, offset=convert_to_int(offset))
 @app.route("/new")
 def new():
   offset = request.args.get('offset', 0)
   li = get_new(offset)
-  return render_template("index.html", li=li, offset=int(offset))
+  return render_template("index.html", li=li, offset=convert_to_int(offset))
 @app.route("/p/<int:id>")
 def comments(id):
   post = None
