@@ -27,7 +27,9 @@ def get_post_id(fb_id):
   inserted_id = cur.fetchone()
   if inserted_id:
      return inserted_id[0]
-  else: return None
+  else: 
+    print "Wtf get_post_id doesn't return an inserted_id??? fb_id:" + fb_id
+    return None
 def get_comment_id(fb_id):
   cur.execute("SELECT id FROM \"Comments\" WHERE fb_id = %s", (fb_id,))
   inserted_id = cur.fetchone()
@@ -60,8 +62,13 @@ def get_comment_count_from_summary(summary):
 def save_comment_info(datum, inserted_id):
   try:
     if not datum['id']: return
+    if 'comments' not in graph.get_object(use_epoch(datum['id'])):
+      print "no comments boo"
+      return
     comment_obj = graph.get_object(use_epoch(datum['id']))['comments']
+    sleep(1)
     comments = comment_obj['data']
+    print "inserted_id: " + str(inserted_id)
     while True:
       # comments = datum['comments']['data']
       for c in comments:
@@ -103,11 +110,21 @@ def save_comment_info(datum, inserted_id):
         #sys.exit()
       else: break
   except Exception as e: print "comment exception: " + traceback.print_exc()
+def is_spam(post):
+  if 'ray ban' in post:
+    return True
+
+  if 'RAYBAN' in post:
+    return True
+
+  return False
 def save_post_info(datum):
   try: 
     fb_id = datum['id']
     full_post = datum['message']
-    if 'ray ban' or 'RAYBAN' in full_post: return
+    if is_spam(full_post):
+      print "spamm!"
+      return
     title = get_title_from_post(full_post)
     original_url = datum['actions'][0]['link']
     link = get_link_from_post(full_post)
@@ -119,7 +136,6 @@ def save_post_info(datum):
     group_id = datum['to']['data'][0]['id']
     fb_user_name = datum['from']['name']
     fb_user_id = datum['from']['id']
-    print(group_id)
     inserted_id = get_post_id(fb_id)
     if inserted_id:
       query = """
@@ -140,6 +156,7 @@ def save_post_info(datum):
       cur.execute(query, (fb_id, title, full_post, link, likes, comment_count, likes+comment_count, time, group_id, original_url, fb_user_id, fb_user_name, inserted_id))
       print "updated post: %s" %(inserted_id,)
     else:
+      print "id doesn't exist!"
       query = """INSERT INTO \"Posts\" 
       (fb_id, title, full_post, link, likes, comments, active, time, group_id, original_url, fb_user_id, fb_user_name) 
       VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
@@ -149,6 +166,7 @@ def save_post_info(datum):
       inserted_id = get_post_id(fb_id)
     return inserted_id
   except Exception as e: 
+    print "error"
     print("Post error: " + str(e))
     print( traceback.print_exc() )
 def use_epoch(obj):
@@ -157,9 +175,11 @@ def use_epoch(obj):
   else: return None
 def get_feed(group_id):
   feed = graph.get_object(use_epoch(str(group_id) + "/feed"))
+  sleep(1.5)
   return feed
 def save_post_and_comments(datum):
   inserted_id = save_post_info(datum)
+
   save_comment_info(datum, inserted_id)
 def save_all(group_id):
   con = psycopg2.connect(database="flobbitdb", user='edward', password='yolomol0')
@@ -190,10 +210,10 @@ def save_recent(group_id):
   cur = con.cursor()
   feed = get_feed(group_id)
   data = feed['data']
-  print str(len(data)) + "in page"
+  # print str(len(data)) + "in page"
   for datum in data:
     loop += 1
-    print(str(loop) + "posts in group saved")
+    # print(str(loop) + "posts in group saved")
     sleep(1.5) # fb rate limiting
     save_post_and_comments(datum)
   con.close()
