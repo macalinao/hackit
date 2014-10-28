@@ -111,12 +111,11 @@ def save_comment_info(datum, inserted_id):
       else: break
   except Exception as e: print "comment exception: " + traceback.print_exc()
 def is_spam(post):
-  if 'ray ban' in post:
-    return True
-
-  if 'RAYBAN' in post:
-    return True
-
+  li = ['ray ban', 'rayban']
+  post = post.lower();
+  for i in li:
+    if i in post:
+      return True 
   return False
 def save_post_info(datum):
   try: 
