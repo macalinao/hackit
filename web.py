@@ -11,6 +11,15 @@ import config
 app = Flask(__name__)
 
 _link = re.compile(r'(?:(http://)|(www\.))(\S+\b/?)([!"#$%&\'()*+,\-./:;<=>?@[\\\]^_`{|}~]*)(\s|$)', re.I)
+def convertLinks2(value):
+    # Replace url to link
+    urls = re.compile(r"((https?):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+-=\\\.&]*)", re.MULTILINE|re.UNICODE)
+    value = urls.sub(r'<a href="\1" target="_blank">\1</a>', value)
+    # Replace email to mailto
+    urls = re.compile(r"([\w\-\.]+@(\w[\w\-]+\.)+[\w\-]+)", re.MULTILINE|re.UNICODE)
+    value = urls.sub(r'<a href="mailto:\1">\1</a>', value)
+    return value
+
 def convertLinks(text): 
     def replace(match):
         groups = match.groups()
@@ -43,6 +52,7 @@ def process_posts(li):
         i.update({'nice_link':'self'})
     else:
         i.update({'nice_link':urlparse(i['link']).netloc})
+    i['full_post'] = i['full_post'].replace('\n','\n\n')
     i['full_post'] = Markup(markdown.markdown(convertLinks(i['full_post'])))
     i['time'] = arrow.get(i['time']).humanize()
     # i['fb_user_name'] = i['fb_user_name'].decode('utf-8', errors='ignore')
@@ -110,7 +120,7 @@ def process_comments(li):
         try:
             i['time'] = arrow.get(i['time']).humanize()
         except: pass
-        i['comment'] = Markup(convertLinks(i['comment']))
+        i['comment'] = Markup(convertLinks2(i['comment']))
   return li
 def convert_to_int(offset):
   try:
@@ -176,4 +186,4 @@ def faq():
 #app.wsgi_app = ProxyFix(app.wsgi_app)
 
 if __name__ == "__main__":
-  app.run(host="0.0.0.0", debug=True)
+  app.run(host="0.0.0.0", port=5151, debug=True)
