@@ -2,7 +2,7 @@
 
 *Hackit* - Reddit for Facebook Groups.
 
-==Setup==
+##Setup
 
 Requires Postgresql and Python. Run `pip install -r requirements.txt` to get all the required packages.
 
