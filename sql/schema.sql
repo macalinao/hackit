@@ -10,14 +10,14 @@ SET check_function_bodies = false;
 SET client_min_messages = warning;
 
 --
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner:
 --
 
 CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 
 --
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner:
 --
 
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
@@ -30,7 +30,7 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: Comments; Type: TABLE; Schema: public; Owner: edward; Tablespace: 
+-- Name: Comments; Type: TABLE; Schema: public; Owner: hackit; Tablespace:
 --
 
 CREATE TABLE "Comments" (
@@ -45,10 +45,10 @@ CREATE TABLE "Comments" (
 );
 
 
-ALTER TABLE public."Comments" OWNER TO edward;
+ALTER TABLE public."Comments" OWNER TO hackit;
 
 --
--- Name: Comments_id_seq; Type: SEQUENCE; Schema: public; Owner: edward
+-- Name: Comments_id_seq; Type: SEQUENCE; Schema: public; Owner: hackit
 --
 
 CREATE SEQUENCE "Comments_id_seq"
@@ -59,17 +59,17 @@ CREATE SEQUENCE "Comments_id_seq"
     CACHE 1;
 
 
-ALTER TABLE public."Comments_id_seq" OWNER TO edward;
+ALTER TABLE public."Comments_id_seq" OWNER TO hackit;
 
 --
--- Name: Comments_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: edward
+-- Name: Comments_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: hackit
 --
 
 ALTER SEQUENCE "Comments_id_seq" OWNED BY "Comments".id;
 
 
 --
--- Name: Groups; Type: TABLE; Schema: public; Owner: edward; Tablespace: 
+-- Name: Groups; Type: TABLE; Schema: public; Owner: hackit; Tablespace:
 --
 
 CREATE TABLE "Groups" (
@@ -79,10 +79,10 @@ CREATE TABLE "Groups" (
 );
 
 
-ALTER TABLE public."Groups" OWNER TO edward;
+ALTER TABLE public."Groups" OWNER TO hackit;
 
 --
--- Name: Groups_id_seq; Type: SEQUENCE; Schema: public; Owner: edward
+-- Name: Groups_id_seq; Type: SEQUENCE; Schema: public; Owner: hackit
 --
 
 CREATE SEQUENCE "Groups_id_seq"
@@ -93,17 +93,17 @@ CREATE SEQUENCE "Groups_id_seq"
     CACHE 1;
 
 
-ALTER TABLE public."Groups_id_seq" OWNER TO edward;
+ALTER TABLE public."Groups_id_seq" OWNER TO hackit;
 
 --
--- Name: Groups_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: edward
+-- Name: Groups_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: hackit
 --
 
 ALTER SEQUENCE "Groups_id_seq" OWNED BY "Groups".g_id;
 
 
 --
--- Name: Posts; Type: TABLE; Schema: public; Owner: edward; Tablespace: 
+-- Name: Posts; Type: TABLE; Schema: public; Owner: hackit; Tablespace:
 --
 
 CREATE TABLE "Posts" (
@@ -123,10 +123,10 @@ CREATE TABLE "Posts" (
 );
 
 
-ALTER TABLE public."Posts" OWNER TO edward;
+ALTER TABLE public."Posts" OWNER TO hackit;
 
 --
--- Name: Posts_id_seq; Type: SEQUENCE; Schema: public; Owner: edward
+-- Name: Posts_id_seq; Type: SEQUENCE; Schema: public; Owner: hackit
 --
 
 CREATE SEQUENCE "Posts_id_seq"
@@ -137,38 +137,38 @@ CREATE SEQUENCE "Posts_id_seq"
     CACHE 1;
 
 
-ALTER TABLE public."Posts_id_seq" OWNER TO edward;
+ALTER TABLE public."Posts_id_seq" OWNER TO hackit;
 
 --
--- Name: Posts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: edward
+-- Name: Posts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: hackit
 --
 
 ALTER SEQUENCE "Posts_id_seq" OWNED BY "Posts".id;
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: edward
+-- Name: id; Type: DEFAULT; Schema: public; Owner: hackit
 --
 
 ALTER TABLE ONLY "Comments" ALTER COLUMN id SET DEFAULT nextval('"Comments_id_seq"'::regclass);
 
 
 --
--- Name: g_id; Type: DEFAULT; Schema: public; Owner: edward
+-- Name: g_id; Type: DEFAULT; Schema: public; Owner: hackit
 --
 
 ALTER TABLE ONLY "Groups" ALTER COLUMN g_id SET DEFAULT nextval('"Groups_id_seq"'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: edward
+-- Name: id; Type: DEFAULT; Schema: public; Owner: hackit
 --
 
 ALTER TABLE ONLY "Posts" ALTER COLUMN id SET DEFAULT nextval('"Posts_id_seq"'::regclass);
 
 
 --
--- Name: Comments_pkey; Type: CONSTRAINT; Schema: public; Owner: edward; Tablespace: 
+-- Name: Comments_pkey; Type: CONSTRAINT; Schema: public; Owner: hackit; Tablespace:
 --
 
 ALTER TABLE ONLY "Comments"
@@ -176,7 +176,7 @@ ALTER TABLE ONLY "Comments"
 
 
 --
--- Name: Posts_pkey; Type: CONSTRAINT; Schema: public; Owner: edward; Tablespace: 
+-- Name: Posts_pkey; Type: CONSTRAINT; Schema: public; Owner: hackit; Tablespace:
 --
 
 ALTER TABLE ONLY "Posts"
@@ -184,12 +184,12 @@ ALTER TABLE ONLY "Posts"
 
 
 --
--- Name: public; Type: ACL; Schema: -; Owner: edward
+-- Name: public; Type: ACL; Schema: -; Owner: hackit
 --
 
 REVOKE ALL ON SCHEMA public FROM PUBLIC;
-REVOKE ALL ON SCHEMA public FROM edward;
-GRANT ALL ON SCHEMA public TO edward;
+REVOKE ALL ON SCHEMA public FROM hackit;
+GRANT ALL ON SCHEMA public TO hackit;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
 

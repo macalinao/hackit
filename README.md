@@ -2,14 +2,25 @@
 
 *Hackit* - Reddit for Facebook Groups.
 
+Pull requests appreciated!
+
 ##Setup
 
-Requires Postgresql and Python. Run `pip install -r requirements.txt` to get all the required packages.
+Setup is provided via [Vagrant](https://vagrantup.com), which deals with all dependencies and setup issues.
 
-Import `db_backups/schema.sql` and set parameters in `config-example.py`.
+### Running with Vagrant
 
-Run `python web.py` to get the app running.
+To start Hackit with Vagrant:
 
-I'll try to setup vagrant soon so you don't have to do the above steps. Anyone want to help?
+- Install Vagrant
+- Clone the repo
+- Run, in a terminal:
+```bash
+	vagrant up
+	vagrant ssh
+	python /vagrant/web.py
+```
 
-Pull requests appreciated!
+### Running without Vagrant
+
+Please check out the [`bootstrap.sh`](bootstrap.sh) file, as that contains all the setup needed for installing dependencies for Hackit.
